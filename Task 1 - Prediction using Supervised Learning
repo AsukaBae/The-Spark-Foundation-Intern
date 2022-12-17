@@ -1,0 +1,38 @@
+#basic 1st task
+df <- read.csv('C:/Users/User/Downloads/student_scores.csv')
+head(df)
+summary(df)
+any(is.na(df))
+str(df)
+
+
+library(ggplot2)
+
+ggplot(df,aes(x=Hours , y=Scores))+geom_point()
+
+
+
+
+#Preparing the data
+#split the data into testing set and training set
+library(caTools)
+split <- sample.split(df, SplitRatio = 0.7)
+train <- subset(df, split == TRUE)
+test <- subset(df, split == FALSE)
+model <- lm(Scores ~ Hours , data = df)
+ggplot(df,aes(x=Hours , y=Scores))+geom_point()+geom_smooth(method = lm)
+
+#Let's test our model by predicting on our testing set
+pred <- predict(model, test)
+pred
+# compare the predicted vs actual value
+results <- cbind(pred,test$Scores) 
+colnames(results) <- c('pred','real')
+results <- as.data.frame(results)
+results
+
+#prediction of score if student studies of 9.25 hrs/day
+Hours <- 9.5
+Hours <-as.data.frame(Hours)
+predicted_score <- predict(model, Hours)
+print(predicted_score)
